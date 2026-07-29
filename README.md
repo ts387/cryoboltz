@@ -4,6 +4,11 @@
 
 CryoBoltz is a method for fitting atomic structures into cryo-EM density maps of dynamic proteins. It is built on top of Boltz-1, a state-of-the-art structure prediction model for biomolecular complexes. Through a multi-stage guidance mechanism that modifies the Boltz diffusion trajectory at inference time, CryoBoltz recovers diverse conformations from input cryo-EM data.
 
+## Run in Google Colab
+Don't want to install anything? [`notebooks/CryoBoltz_Colab.ipynb`](notebooks/CryoBoltz_Colab.ipynb) runs the whole pipeline on a free Colab GPU: installation, model weights, input preparation and validation, map cropping, guided prediction, and 3D visualization of the model in the map. It also includes a small built-in smoke test (synthetic map, ~10 min on a T4) and can build the required pre-aligned structure for you — an unguided Boltz prediction plus a rigid-body fit into the map — so ChimeraX is not needed. Open it with [Colab's GitHub loader](https://colab.research.google.com/github/) or via the *Open in Colab* link on the file's GitHub page.
+
+Note that the Pma1 example below is a 918-residue system and needs an A100/L4-class GPU; smaller systems fit on a free T4.
+
 ## Installation
 We recommend installing CryoBoltz in a clean conda environment -- first clone the git repository, and then use `pip` to install the package from the source code:
 ```
