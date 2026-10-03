@@ -229,7 +229,7 @@ class MSAModule(nn.Module):
                 chunk_size_transition_z = 64
                 chunk_size_transition_msa = 32
                 chunk_size_outer_product = 4
-                chunk_size_tri_attn = 128
+                chunk_size_tri_attn = 128 if z.shape[1] <= 1024 else 32  # smaller chunks for large complexes
             else:
                 chunk_heads_pwa = False
                 chunk_size_transition_z = None
@@ -521,7 +521,7 @@ class PairformerModule(nn.Module):
         """
         if not self.training:
             if z.shape[1] > const.chunk_size_threshold:
-                chunk_size_tri_attn = 128
+                chunk_size_tri_attn = 128 if z.shape[1] <= 1024 else 32  # smaller chunks for large complexes
             else:
                 chunk_size_tri_attn = 512
         else:
@@ -618,7 +618,9 @@ class PairformerLayer(nn.Module):
             chunk_size=chunk_size_tri_attn,
         )
 
-        z = z + self.transition_z(z)
+        z = z + self.transition_z(
+            z, chunk_size=64 if z.shape[1] > const.chunk_size_threshold else None
+        )
 
         # Compute sequence stack
         if not self.no_update_s:
